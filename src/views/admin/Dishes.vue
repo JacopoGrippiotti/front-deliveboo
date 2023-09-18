@@ -33,13 +33,17 @@
 </template>
 
 <script>
-	// import {store} from "../store.js";
-	// import axios from "axios";
+    import {store} from "../../store.js";
+    import axios from "axios";
 
-	export default {
-		data() {
-			return {
-				// store
+    export default {
+        data() {
+            return {
+                store,
+                apiUrl: 'http://127.0.0.1:8000/api/',
+                userToken: '',
+                userId: '',
+                userName: '',
                 dishes: [
                     {
                         name: 'Carbonara',
@@ -70,29 +74,44 @@
                         image: '../../../src/images/d7.jpeg',
                     },
                 ],
-			}
-		},
+            }
+        },
 
-		components: {
+        components: {
 
-		},
+        },
 
-		props: {
+        props: {
 
-		},
+        },
 
-		mounted () {
+        mounted () {
+            this.getDishes()
+        },
 
-		},
+        created () {
+            this.userToken = localStorage.getItem('userToken')
+            this.userId = localStorage.getItem('userId')
+            this.userName = localStorage.getItem('userName')
+            console.log(store.selectedRes)
+        },
 
-		created () {
-
-		},
-
-		methods: {
-
-		}
-	}
+        methods: {
+            getDishes(){
+                axios.get(`${this.apiUrl}${this.userId}/restaurants/${store.selectedRes}`,{
+                headers: {
+                'Authorization': `Bearer ${this.userToken}`
+                }
+                })
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+            },
+        }
+    }
 </script>
 
 <style lang="scss" scoped>
